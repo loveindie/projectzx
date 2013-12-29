@@ -1,9 +1,7 @@
 require"player"
 require"mom"
 function botLoad()
-	
 		--world = love.physics.newWorld(0, 0, true)  --Gravity is being set to 0 in the x direction and 0 in the y direction.
-
 	
 	bot1 = {}
 	 bot1.body = love.physics.newBody(world, 450, 200, "dynamic")
@@ -14,8 +12,6 @@ function botLoad()
      bot1.speed = 45
 	 bot1.health = 10
 	 bot1.damage = 2	
-     
-	
 
 	bot2 = {}
 	 bot2.body = love.physics.newBody(world, 500, 200, "dynamic")
@@ -38,6 +34,21 @@ function botLoad()
      bot3.speed = 55
 	 bot3.health = 45
 	 bot3.damage = 20	
+	 	
+	--mike: this is the spawning of the children	
+	botChildren = {}
+	for i = 1, 5 do
+		botChildren[i] = {}
+		botChildren[i].body = love.physics.newBody(world, mother.body:getX(), mother.body:getY(), "dynamic")
+		botChildren[i].body:setMass(100) -- make it pretty light
+		botChildren[i].shape = love.physics.newRectangleShape(0, 0, 10, 10)
+		botChildren[i].fixture = love.physics.newFixture(botChildren[i].body, botChildren[i].shape, 2) 
+		botChildren[i].fixture:setRestitution(0.5)  
+		botChildren[i].speed = 45
+		botChildren[i].health = 10
+		botChildren[i].damage = 2
+	end
+	
 	--[[ 
 	block1 = {}
 	block1.body = love.physics.newBody(world, 200,200,'dynamic')
@@ -46,9 +57,22 @@ function botLoad()
 	]]--
 end
 
-function botUpdate(dt)
-	
-	
+--[[function createBotChildren()
+botChildren = {}
+	for i = 1, 5 do
+		botChildren[i] = {}
+		botChildren[i].body = love.physics.newBody(world, mother.body:getX(), mother.body:getY(), "dynamic")
+		botChildren[i].body:setMass(100) -- make it pretty light
+		botChildren[i].shape = love.physics.newRectangleShape(0, 0, 10, 10)
+		botChildren[i].fixture = love.physics.newFixture(botChildren[i].body, botChildren[i].shape, 2) 
+		botChildren[i].fixture:setRestitution(0.5)  
+		botChildren[i].speed = 45
+		botChildren[i].health = 10
+		botChildren[i].damage = 2
+	end
+end]]--
+
+function botUpdate(dt)	
 	if player1.body:getY() > bot1.body:getY() then
 		bot1.body:setY( bot1.body:getY() + 20 * dt) 
 	end
@@ -77,7 +101,7 @@ function botUpdate(dt)
 	end
 	
 	
-if player1.body:getY() > bot3.body:getY() then
+	if player1.body:getY() > bot3.body:getY() then
 		bot3.body:setY( bot3.body:getY() + 10 * dt) 
 	end
 	if player1.body:getY() < bot3.body:getY() then
@@ -90,16 +114,24 @@ if player1.body:getY() > bot3.body:getY() then
 		bot3.body:setX(bot3.body:getX() - 10 * dt) 
 	end
 	
-	
-	
-	
-	 
-	 
+	--mike: this controls the movements for each child
+	for i, botChild in ipairs(botChildren) do
+		if player1.body:getY() > botChild.body:getY() then
+			botChild.body:setY( botChild.body:getY() + 20 * dt) 
+		end
+		if player1.body:getY() < botChild.body:getY() then
+			botChild.body:setY(botChild.body:getY() - 20 * dt)
+		end
+		if player1.body:getX() > botChild.body:getX() then
+			botChild.body:setX(botChild.body:getX() + 20 * dt)
+		end
+		if player1.body:getX() < botChild.body:getX() then
+			botChild.body:setX(botChild.body:getX() - 20 * dt) 
+		end
+	end
 end
 
 function botDraw()
-	
-	
 	--Bot one
 	love.graphics.setColor(51, 255, 204) -- set the drawing color to turquoise for bot1
     love.graphics.polygon("fill", bot1.body:getWorldPoints(bot1.shape:getPoints()))
@@ -110,36 +142,49 @@ function botDraw()
 	love.graphics.setColor(102, 255, 51) -- set the drawing color to green for the bot3
     love.graphics.polygon("fill", bot3.body:getWorldPoints(bot3.shape:getPoints()))
 	
-	
+	--mike: this colors each child
+	for i, botChild in ipairs(botChildren) do
+		love.graphics.setColor(51, 255, 204) -- set the drawing color to turquoise for botChild
+		love.graphics.polygon("fill", botChild.body:getWorldPoints(botChild.shape:getPoints()))
+	end
 end
 
+--[[botChildren = {}
+function botChildren()
+	for i = 1, 5 do
+		botChildren[i] = {}
+		botChildren[i].body = love.physics.newBody(world, mother.body:getX(), mother.body:getY(), "dynamic")
+		botChildren[i].body:setMass(100) -- make it pretty light
+		botChildren[i].shape = love.physics.newRectangleShape(0, 0, 10, 10)
+		botChildren[i].fixture = love.physics.newFixture(botChildren[i].body, botChildren[i].shape, 2) 
+		botChildren[i].fixture:setRestitution(0.5)  
+		botChildren[i].speed = 45
+		botChildren[i].health = 10
+		botChildren[i].damage = 2
+	end
+end]]--
 
-bot1 = {}
-
-function spawnbot1()
+--[[function spawnbot1()
     for i=1,100 do --Replace 10 with number of enemies you want
-        bot1s[#bot1s+1]={
-        x = mother.body:getY(),
+        bot1[#bot1+1]={
+        x = mother.body:getX(),
         y = mother.body:getY(),
         }
     end
-end
+end]]--
 
-function bot1:init()
-
+--[[function botChildren:init()
    self.timer = 0
    self.spawnTime = 3
-
 end
 
-function bot1:update( dt )
-
+function botChildren:update( dt )
    self.timer = self.timer + dt
    if self.timer > self.spawnTime then
-     spawnbot1()  -- his code
+     botChildren()  -- his code
       self.timer = 0
 	  print("spawn")
    end
 
         -- update anything else enemy related here
-end
+end]]--

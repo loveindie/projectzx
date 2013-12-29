@@ -21,10 +21,11 @@ function love.load()  --Everything is being loaded in to a new world with gravit
 	menuButton_spawn(350, 400, "Quit", "quit") 
 	
      menuLoad()
+	 motherLoad()
      botLoad() 
      --mapLoad()
      playerLoad()
-	 motherLoad()
+	 --motherLoad()
 	 physicsLoad()
 	-- bulletLoad()
 	 audioLoad()
@@ -37,14 +38,17 @@ function love.update(dt) -- Update
 	
 		world:update(dt)		
 		menuUpdate(dt)
+		motherUpdate(dt)
 		botUpdate(dt)
 	--	mapUpdate(dt)
-		motherUpdate(dt)
+		--motherUpdate(dt)
 		physicsUpdate(dt)
 		playerUpdate(dt)
        -- bulletUpdate(dt)
-	    
-		end
+	  --createBotChildren(dt)
+	  --botChildren:update(dt)
+
+	   end
 			 if gameState == "menu" then 
 			 menuUpdate(dt)
 			end
@@ -54,9 +58,10 @@ function love.update(dt) -- Update
 function love.draw() -- draw
 
 	if gameState == "playing"  then
+		motherDraw()
 		botDraw()
 		playerDraw()
-		motherDraw()
+		--motherDraw()
 		--bulletDraw()
 	end
 
